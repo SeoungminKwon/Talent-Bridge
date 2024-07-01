@@ -1,0 +1,36 @@
+server:
+  port: 8080
+spring:
+  profiles:
+    active: dev, secret
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100
+        format_sql: true
+        highlight_sql: true
+        use_sql_comments: true
+logging:
+  level:
+    sample.talentbridge: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+    org.hibernate.orm.jdbc.extract: TRACE
+    org.springframework.transaction.interceptor: TRACE
+
+custom:
+  site:
+    name: TalentBridge
+    baseUrl: "http://localhost:${server.port}"
+    frontUrl: "http://localhost:3000"
+  cookie:
+    secure: false

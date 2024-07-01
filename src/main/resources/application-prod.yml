@@ -1,0 +1,6 @@
+custom:
+  site:
+    name: TalentBridge
+    baseUrl: "http://localhost:${server.port}"
+  cookie:
+    secure: true
