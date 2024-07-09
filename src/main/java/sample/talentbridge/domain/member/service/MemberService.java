@@ -27,6 +27,7 @@ public class MemberService {
                                 .email(signupDto.getEmail())
                                 .age(signupDto.getAge())
                                 .phoneNumber(signupDto.getPhoneNumber())
+                                .role("ROLE_USER")
                                 .build();
 
         return memberRepository.save(member);
