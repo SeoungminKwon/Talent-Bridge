@@ -8,4 +8,8 @@ public class ErrorResponse {
         this.error = error;
         this.message = message;
     }
+
+    public static ErrorResponse of(String error, String message) {
+        return new ErrorResponse(error, message);
+    }
 }
