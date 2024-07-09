@@ -81,7 +81,13 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                                                          .requestMatchers("/").permitAll()
+                                                         .requestMatchers("/api/v1/members/**").permitAll()
+                                                         .requestMatchers("/h2-console/**").permitAll()
                                                          .anyRequest().authenticated());
+
+        // X-Frame-Options 비활성화
+        http.headers(headers -> headers
+                                        .frameOptions(frameOptionsConfig -> frameOptionsConfig.disable()));
 
         //세션 설정 : STATELESS
         http
