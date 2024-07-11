@@ -17,6 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import sample.talentbridge.domain.member.repository.MemberRepository;
 import sample.talentbridge.global.jwt.JwtFilter;
 import sample.talentbridge.global.jwt.JwtUtil;
 import sample.talentbridge.global.jwt.LoginFilter;
@@ -49,7 +50,7 @@ public class SecurityConfig {
 
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, MemberRepository memberRepository) throws Exception {
 
         //cors 설정
         http
@@ -85,7 +86,7 @@ public class SecurityConfig {
 
         // JwtFilter 추가
         http
-                .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtFilter(jwtUtil, memberRepository), UsernamePasswordAuthenticationFilter.class);
 
         // CustomUsernamePasswordFilter 추가
         http
