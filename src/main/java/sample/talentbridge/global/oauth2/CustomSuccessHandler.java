@@ -2,7 +2,6 @@ package sample.talentbridge.global.oauth2;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -41,19 +40,8 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String role = auth.getAuthority();
         String token = jwtUtil.createJwt(username, role, 60 * 60 * 60L);
 
-        response.addCookie(createCookie("Authorization", token));
+        response.addHeader("Authorization", "Bearer " + token);
         response.sendRedirect(frontUrl);
-    }
-
-    private Cookie createCookie(String key, String value) {
-
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(60*60*60);
-        cookie.setSecure(cookieSecure);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-
-        return cookie;
     }
 }
 

@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,6 +19,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import sample.talentbridge.global.jwt.JwtFilter;
 import sample.talentbridge.global.jwt.JwtUtil;
+import sample.talentbridge.global.jwt.LoginFilter;
 import sample.talentbridge.global.oauth2.CustomOAuth2UserService;
 import sample.talentbridge.global.oauth2.CustomSuccessHandler;
 
@@ -28,6 +31,8 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler;
     private final JwtUtil jwtUtil;
+    private final AuthenticationConfiguration authenticationConfiguration;
+
 
     @Value("${custom.site.frontUrl}")
     private String frontUrl;
@@ -36,6 +41,12 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -72,9 +83,14 @@ public class SecurityConfig {
         http
                 .httpBasic((auth) -> auth.disable());
 
-        //JwtFilter 추가
+        // JwtFilter 추가
         http
                 .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+
+        // CustomUsernamePasswordFilter 추가
+        http
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil)
+                        , UsernamePasswordAuthenticationFilter.class);
 
         //oauth2
         http
