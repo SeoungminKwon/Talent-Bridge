@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import sample.talentbridge.domain.auth.exception.InvalidTokenException;
 import sample.talentbridge.domain.member.exception.DuplicateMemberException;
 import sample.talentbridge.global.exception.exception.dto.ErrorResponse;
 
@@ -15,6 +16,7 @@ import sample.talentbridge.global.exception.exception.dto.ErrorResponse;
 @Slf4j
 public class GlobalExceptionHandler {
 
+    // OAuht2 인증 예외
     @ExceptionHandler(OAuth2AuthenticationException.class)
     public ResponseEntity<ErrorResponse> handleOAuth2AuthenticationException(OAuth2AuthenticationException exception) {
 
@@ -23,11 +25,21 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 
+    // 중복 멤버
     @ExceptionHandler(DuplicateMemberException.class)
     public ResponseEntity<ErrorResponse> handleDuplicateUsernameException(DuplicateMemberException exception) {
 
         log.error("중복 아이디 존재 예외 : {}", exception.getMessage());
         ErrorResponse response = new ErrorResponse("DuplicateMember_Error", "중복되는 회원이 존재합니다.");
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidTokenException(InvalidTokenException exception) {
+
+        log.error("토큰 검증 예외 : {}", exception.getMessage());
+        ErrorResponse response = new ErrorResponse("InvalidTokenException", "토큰 검증에 실패했습니다.");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 }
