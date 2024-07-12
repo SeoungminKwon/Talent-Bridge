@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import sample.talentbridge.global.jwt.JwtConstants;
 import sample.talentbridge.global.jwt.JwtUtil;
 
 @Component
@@ -38,9 +39,10 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
-        String token = jwtUtil.createJwt(username, role, 60 * 60 * 60L);
 
-        response.addHeader("Authorization", "Bearer " + token);
+        jwtUtil.createAccessAndRefresh(username, role,
+                JwtConstants.ACCESS_TOKEN_EXPIRATION, JwtConstants.REFRESH_TOKEN_EXPIRATION, response);
+
         response.sendRedirect(frontUrl);
     }
 }
