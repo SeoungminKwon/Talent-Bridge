@@ -7,6 +7,7 @@ public enum AuthErrorMessage {
     REFRESH_TOKEN_NULL("RefreshToken의 값이 Null입니다."),
     REFRESH_TOKEN_VERIFICATION_FAILED("RefreshToken 검증 실패 했습니다."),
     REFRESH_TOKEN_EXPIRED("RefreshToken 이 만료되었습니다."),
+    REFRESH_TOKEN_NOT_MATCH("카테고리가 일치하지 않습니다.");
     ;
 
     private final String message;
